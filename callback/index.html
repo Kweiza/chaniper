@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>Tesla OAuth Callback</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font: 16px/1.6 system-ui, sans-serif; max-width: 680px; margin: 40px auto; padding: 0 20px; color: #222 }
+    h1 { font-size: 22px; margin-bottom: 4px }
+    p.muted { color: #666; font-size: 14px; margin-top: 0 }
+    .code { background: #f4f4f4; padding: 14px; border-radius: 8px; font: 14px/1.5 ui-monospace, "SF Mono", Menlo, monospace; word-break: break-all; border: 1px solid #e5e5e5 }
+    button { margin-top: 12px; padding: 10px 16px; border: 0; border-radius: 8px; background: #1a1a1a; color: #fff; cursor: pointer; font-size: 14px }
+    button:hover { background: #000 }
+    .row { display: flex; gap: 12px; align-items: center; margin-top: 12px }
+    .label { color: #444; font-size: 13px; margin-top: 18px; font-weight: 600 }
+    .small { font-size: 12px; color: #888; margin-top: 8px }
+  </style>
+</head>
+<body>
+  <h1>Tesla OAuth callback</h1>
+  <p class="muted">Tesla 로그인 후 받은 코드를 여기서 확인해 복사하세요.</p>
+
+  <div class="label">authorization code</div>
+  <div class="code" id="code">(코드 없음 — URL에 <code>?code=</code> 파라미터가 없습니다)</div>
+  <div class="row">
+    <button onclick="copyCode()" id="cpy">코드 복사</button>
+    <span class="small" id="state"></span>
+  </div>
+
+  <p class="small">이 페이지는 GitHub Pages에 정적으로 호스팅되며, 코드는 브라우저 URL에서만 추출됩니다(서버 저장 없음).</p>
+
+  <script>
+    const p = new URLSearchParams(location.search);
+    const code = p.get('code');
+    const state = p.get('state');
+    const err = p.get('error') || p.get('error_description');
+    const el = document.getElementById('code');
+    if (err) { el.textContent = 'ERROR: ' + err; }
+    else if (code) { el.textContent = code; }
+    if (state) { document.getElementById('state').textContent = 'state=' + state; }
+    function copyCode() {
+      if (!code) return;
+      navigator.clipboard.writeText(code).then(() => {
+        const b = document.getElementById('cpy');
+        const t = b.textContent;
+        b.textContent = '복사됨!';
+        setTimeout(() => b.textContent = t, 1500);
+      });
+    }
+  </script>
+</body>
+</html>
